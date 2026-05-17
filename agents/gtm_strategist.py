@@ -21,7 +21,7 @@ Respond with structured JSON:
 
 def create_gtm_strategist_agent(llm_config=None):
     if llm_config is None:
-        llm_config = LLMConfig(api_type="openai", model="gpt-4o", api_key=os.environ.get("OPENAI_API_KEY", ""))
+        llm_config = LLMConfig(api_type="openai", model="openai/gpt-4o", api_key=os.environ.get("OPENROUTER_API_KEY", ""), base_url="https://openrouter.ai/api/v1")
     return ConversableAgent(
         name="gtm_strategist",
         system_message=SYSTEM_PROMPT,

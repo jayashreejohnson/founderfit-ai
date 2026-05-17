@@ -10,7 +10,12 @@ from agents.matchmaker import create_matchmaker_agent
 from agents.executor import create_executor_agent
 
 def get_llm_config():
-    return LLMConfig(api_type="openai", model="gpt-4o", api_key=os.environ.get("OPENAI_API_KEY", ""))
+    return LLMConfig(
+        api_type="openai",
+        model="openai/gpt-4o",
+        api_key=os.environ.get("OPENROUTER_API_KEY", ""),
+        base_url="https://openrouter.ai/api/v1",
+    )
 
 def run_founder_analysis(founder_a_profile, founder_b_profile, github_data_a=None, github_data_b=None):
     llm_config = get_llm_config()
