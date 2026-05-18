@@ -448,27 +448,27 @@ function renderResults(archetype,dims,name,synthesis=null){
       </button>
       <div class="why-breakdown" id="why-breakdown">
         <div class="signal-grid">
-          <div class="signal-cell${synthesis.questionnaire_signal?’’:’ signal-na’}">
+          <div class="signal-cell${synthesis.questionnaire_signal?'':' signal-na'}">
             <div class="signal-cell-label">Questionnaire</div>
-            <div class="signal-cell-text">${synthesis.questionnaire_signal||’Assessed’}</div>
+            <div class="signal-cell-text">${synthesis.questionnaire_signal||'Assessed'}</div>
           </div>
-          <div class="signal-cell${synthesis.github_signal?’’:’ signal-na’}">
+          <div class="signal-cell${synthesis.github_signal?'':' signal-na'}">
             <div class="signal-cell-label">GitHub Signal</div>
-            <div class="signal-cell-text">${synthesis.github_signal||’Not provided’}</div>
+            <div class="signal-cell-text">${synthesis.github_signal||'Not provided'}</div>
           </div>
-          <div class="signal-cell${synthesis.linkedin_signal?’’:’ signal-na’}">
+          <div class="signal-cell${synthesis.linkedin_signal?'':' signal-na'}">
             <div class="signal-cell-label">LinkedIn Signal</div>
-            <div class="signal-cell-text">${synthesis.linkedin_signal||’Not provided’}</div>
+            <div class="signal-cell-text">${synthesis.linkedin_signal||'Not provided'}</div>
           </div>
         </div>
-        ${synthesis.emergent_insight?`<div class="breakdown-section"><div class="breakdown-label">Emergent Insight</div><div class="breakdown-text">${synthesis.emergent_insight}</div></div>`:’’}
-        ${synthesis.reasoning?`<div class="breakdown-section"><div class="breakdown-label">Reasoning</div><div class="breakdown-text">${synthesis.reasoning}</div></div>`:’’}
-        ${synthesis.partnership_note?`<div class="breakdown-section"><div class="breakdown-label">Partnership Note</div><div class="breakdown-text">${synthesis.partnership_note}</div></div>`:’’}
+        ${synthesis.emergent_insight?`<div class="breakdown-section"><div class="breakdown-label">Emergent Insight</div><div class="breakdown-text">${synthesis.emergent_insight}</div></div>`:''}
+        ${synthesis.reasoning?`<div class="breakdown-section"><div class="breakdown-label">Reasoning</div><div class="breakdown-text">${synthesis.reasoning}</div></div>`:''}
+        ${synthesis.partnership_note?`<div class="breakdown-section"><div class="breakdown-label">Partnership Note</div><div class="breakdown-text">${synthesis.partnership_note}</div></div>`:''}
       </div>
-    </div>` : ‘’}
+    </div>` : ''}
     <div class="result-actions">
       <button class="btn-retry" onclick="location.reload()">Retake</button>
-      <button class="btn-dash" onclick="window.location.href=’/dashboard.html’">Run Compatibility Analysis</button>
+      <button class="btn-dash" onclick="window.location.href='/dashboard.html'">Run Compatibility Analysis</button>
     </div>`;
   document.getElementById('results').style.display='block';
 }
