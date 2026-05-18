@@ -226,22 +226,6 @@
             </select>
           </div>
         </div>
-        <div class="field-row">
-          <div><label>Location <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label><input id="a_location" placeholder="e.g. New York, NY"/></div>
-          <div><label>Timezone <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
-            <select id="a_timezone">
-              <option value="">— select —</option>
-              <option value="EST">EST (UTC−5)</option>
-              <option value="CST">CST (UTC−6)</option>
-              <option value="MST">MST (UTC−7)</option>
-              <option value="PST">PST (UTC−8)</option>
-              <option value="GMT">GMT (UTC+0)</option>
-              <option value="CET">CET (UTC+1)</option>
-              <option value="IST">IST (UTC+5:30)</option>
-              <option value="SGT">SGT (UTC+8)</option>
-            </select>
-          </div>
-        </div>
         <label>GitHub Username</label>
         <input id="a_github" placeholder="optional"/>
         <label>LinkedIn PDF <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)">(optional — <a href="https://www.youtube.com/watch?v=YrplE62daWQ" target="_blank" style="color:#a5b4fc;text-decoration:underline">how do I export my LinkedIn as a PDF?</a>)</span></label>
@@ -254,6 +238,8 @@
           <span>&#128196;</span><span id="a_cv_label">Click to upload PDF</span>
         </div>
         <input id="a_cv_input" type="file" accept=".pdf" style="display:none" onchange="handleCvUpload('a', this)"/>
+        <div id="a_loc_detected" style="display:none;align-items:center;gap:.5rem;font-size:.78rem;color:#a5b4fc;margin-bottom:.75rem;padding:.45rem .75rem;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.15);border-radius:.5rem">📍 <span id="a_loc_text"></span><span id="a_tz_text" style="color:var(--muted)"></span><span id="a_loc_src" style="color:var(--muted);font-size:.7rem;font-style:italic"></span><button onclick="clearLoc('a')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.75rem;margin-left:auto;line-height:1;font-family:inherit" title="Remove">✕</button></div>
+        <div id="a_loc_prompt" style="margin-bottom:.75rem"><button onclick="toggleLocInput('a')" style="background:none;border:none;color:var(--muted);font-size:.78rem;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:.375rem;padding:.2rem 0">📍 <span>Add location (optional)</span></button><div id="a_loc_inp" style="display:none;margin-top:.625rem"><div style="display:flex;gap:.5rem;align-items:center"><input id="a_loc_manual" placeholder="City, State" style="flex:1;margin-bottom:0;font-size:.8rem;padding:.5rem .75rem"/><select id="a_tz_manual" style="width:90px;margin-bottom:0;font-size:.8rem;padding:.5rem"><option value="">TZ</option><option value="EST">EST</option><option value="CST">CST</option><option value="MST">MST</option><option value="PST">PST</option><option value="GMT">GMT</option><option value="CET">CET</option><option value="IST">IST</option><option value="SGT">SGT</option></select><button onclick="saveLocManual('a')" style="padding:.5rem .75rem;background:var(--primary);border:none;border-radius:.375rem;color:#fff;font-size:.75rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit">Save</button></div></div></div>
       </div>
 
       <div class="vs-divider">
@@ -312,22 +298,6 @@
             </select>
           </div>
         </div>
-        <div class="field-row">
-          <div><label>Location <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label><input id="b_location" placeholder="e.g. San Francisco, CA"/></div>
-          <div><label>Timezone <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
-            <select id="b_timezone">
-              <option value="">— select —</option>
-              <option value="EST">EST (UTC−5)</option>
-              <option value="CST">CST (UTC−6)</option>
-              <option value="MST">MST (UTC−7)</option>
-              <option value="PST">PST (UTC−8)</option>
-              <option value="GMT">GMT (UTC+0)</option>
-              <option value="CET">CET (UTC+1)</option>
-              <option value="IST">IST (UTC+5:30)</option>
-              <option value="SGT">SGT (UTC+8)</option>
-            </select>
-          </div>
-        </div>
         <label>GitHub Username</label>
         <input id="b_github" placeholder="optional"/>
         <label>LinkedIn PDF <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)">(optional — <a href="https://www.youtube.com/watch?v=YrplE62daWQ" target="_blank" style="color:#a5b4fc;text-decoration:underline">how do I export my LinkedIn as a PDF?</a>)</span></label>
@@ -340,6 +310,8 @@
           <span>&#128196;</span><span id="b_cv_label">Click to upload PDF</span>
         </div>
         <input id="b_cv_input" type="file" accept=".pdf" style="display:none" onchange="handleCvUpload('b', this)"/>
+        <div id="b_loc_detected" style="display:none;align-items:center;gap:.5rem;font-size:.78rem;color:#c084fc;margin-bottom:.75rem;padding:.45rem .75rem;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.15);border-radius:.5rem">📍 <span id="b_loc_text"></span><span id="b_tz_text" style="color:var(--muted)"></span><span id="b_loc_src" style="color:var(--muted);font-size:.7rem;font-style:italic"></span><button onclick="clearLoc('b')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.75rem;margin-left:auto;line-height:1;font-family:inherit" title="Remove">✕</button></div>
+        <div id="b_loc_prompt" style="margin-bottom:.75rem"><button onclick="toggleLocInput('b')" style="background:none;border:none;color:var(--muted);font-size:.78rem;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:.375rem;padding:.2rem 0">📍 <span>Add location (optional)</span></button><div id="b_loc_inp" style="display:none;margin-top:.625rem"><div style="display:flex;gap:.5rem;align-items:center"><input id="b_loc_manual" placeholder="City, State" style="flex:1;margin-bottom:0;font-size:.8rem;padding:.5rem .75rem"/><select id="b_tz_manual" style="width:90px;margin-bottom:0;font-size:.8rem;padding:.5rem"><option value="">TZ</option><option value="EST">EST</option><option value="CST">CST</option><option value="MST">MST</option><option value="PST">PST</option><option value="GMT">GMT</option><option value="CET">CET</option><option value="IST">IST</option><option value="SGT">SGT</option></select><button onclick="saveLocManual('b')" style="padding:.5rem .75rem;background:var(--primary);border:none;border-radius:.375rem;color:#fff;font-size:.75rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit">Save</button></div></div></div>
       </div>
     </div>
 
@@ -429,6 +401,71 @@
 const agentOrder=['resume','storyteller','synthesis','compatibility','gtm','matchmaker','repotale','communicator'];
 const resumeTexts={a:null,b:null};
 const cvTexts={a:null,b:null};
+const locData={a:{city:null,timezone:null},b:{city:null,timezone:null}};
+
+/* ── LOCATION EXTRACTION ─────────────────────────────────────────── */
+function extractLocation(text){
+  if(!text)return null;
+  const lines=text.split('\n').slice(0,40);
+  for(const line of lines){
+    const t=line.trim();
+    if(!t||t.length>60||t.length<3||t.includes('@')||t.includes('http')||/^\d/.test(t))continue;
+    const m=t.match(/^([A-Z][a-zA-Z\s\-\.]+),\s*([A-Z][a-zA-Z\s]+?)(?:,\s*.+)?$/);
+    if(m)return t.replace(/,\s*United States$|,\s*USA$/i,'').trim();
+  }
+  const lm=text.match(/(?:Location|Based in|City)[:\s]+([A-Z][a-zA-Z\s]+(?:,\s*[A-Z][a-zA-Z\s]+)*)/i);
+  if(lm)return lm[1].trim().substring(0,50);
+  return null;
+}
+const CITY_TZ={'new york':'EST','brooklyn':'EST','manhattan':'EST','boston':'EST','miami':'EST','atlanta':'EST','philadelphia':'EST','washington':'EST','toronto':'EST',
+  'chicago':'CST','houston':'CST','dallas':'CST','austin':'CST','minneapolis':'CST',
+  'denver':'MST','phoenix':'MST','salt lake':'MST',
+  'san francisco':'PST','los angeles':'PST','seattle':'PST','portland':'PST','san jose':'PST','san diego':'PST','las vegas':'PST','vancouver':'PST',
+  'london':'GMT','dublin':'GMT','lisbon':'GMT',
+  'paris':'CET','berlin':'CET','amsterdam':'CET','zurich':'CET','madrid':'CET','rome':'CET',
+  'bangalore':'IST','mumbai':'IST','delhi':'IST','hyderabad':'IST','pune':'IST','chennai':'IST',
+  'singapore':'SGT','hong kong':'SGT','shanghai':'SGT','beijing':'SGT'};
+function inferTimezone(loc){
+  if(!loc)return null;
+  const l=loc.toLowerCase();
+  for(const[city,tz]of Object.entries(CITY_TZ)){if(l.includes(city))return tz;}
+  if(/,\s*(ny|nj|ma|ct|ri|vt|nh|me|pa|dc|md|de|va|nc|sc|ga|fl)\b/i.test(loc))return 'EST';
+  if(/,\s*(il|tx|mn|ia|mo|wi|la|ms|al|tn|ar|ok|ks|nd|sd|ne)\b/i.test(loc))return 'CST';
+  if(/,\s*(co|az|nm|ut|id|mt|wy)\b/i.test(loc))return 'MST';
+  if(/,\s*(ca|wa|or|nv|ak)\b/i.test(loc))return 'PST';
+  return null;
+}
+function trySetLoc(prefix,text,source){
+  const city=extractLocation(text);
+  if(city)setLoc(prefix,city,inferTimezone(city),source);
+}
+function setLoc(prefix,city,tz,source){
+  locData[prefix]={city,timezone:tz||null};
+  document.getElementById(prefix+'_loc_text').textContent=city;
+  document.getElementById(prefix+'_tz_text').textContent=tz?' · '+tz:'';
+  document.getElementById(prefix+'_loc_src').textContent=source?' ('+source+')':'';
+  document.getElementById(prefix+'_loc_detected').style.display='flex';
+  document.getElementById(prefix+'_loc_prompt').style.display='none';
+}
+function clearLoc(prefix){
+  locData[prefix]={city:null,timezone:null};
+  document.getElementById(prefix+'_loc_detected').style.display='none';
+  document.getElementById(prefix+'_loc_prompt').style.display='block';
+  document.getElementById(prefix+'_loc_inp').style.display='none';
+  document.getElementById(prefix+'_loc_manual').value='';
+  document.getElementById(prefix+'_tz_manual').value='';
+}
+function toggleLocInput(prefix){
+  const inp=document.getElementById(prefix+'_loc_inp');
+  inp.style.display=inp.style.display==='none'?'block':'none';
+}
+function saveLocManual(prefix){
+  const city=document.getElementById(prefix+'_loc_manual').value.trim();
+  if(!city)return;
+  const tz=document.getElementById(prefix+'_tz_manual').value||inferTimezone(city);
+  setLoc(prefix,city,tz,'manual');
+  document.getElementById(prefix+'_loc_inp').style.display='none';
+}
 
 async function handleResumeUpload(prefix, input){
   const file=input.files[0];
@@ -450,6 +487,7 @@ async function handleResumeUpload(prefix, input){
     labelEl.textContent='✓ '+file.name+' ('+Math.round(data.char_count/100)/10+'k chars)';
     dropEl.style.borderColor='var(--success)';
     dropEl.style.color='var(--success)';
+    trySetLoc(prefix,data.text,'LinkedIn');
   }catch(e){
     labelEl.textContent='⚠ '+e.message;
     dropEl.style.borderColor='var(--error)';
@@ -477,6 +515,8 @@ async function handleCvUpload(prefix, input){
     labelEl.textContent='✓ '+file.name+' ('+Math.round(data.char_count/100)/10+'k chars)';
     dropEl.style.borderColor='var(--success)';
     dropEl.style.color='var(--success)';
+    // Only extract from CV if LinkedIn didn't already set a location
+    if(!locData[prefix].city)trySetLoc(prefix,data.text,'CV');
   }catch(e){
     labelEl.textContent='⚠ '+e.message;
     dropEl.style.borderColor='var(--error)';
@@ -498,8 +538,8 @@ function buildProfile(prefix){
     execution_style:document.getElementById(prefix+'_exec').value,
     conflict_approach:document.getElementById(prefix+'_conflict').value,
     github_username:document.getElementById(prefix+'_github').value,
-    location:document.getElementById(prefix+'_location').value.trim()||stored.location||null,
-    timezone:document.getElementById(prefix+'_timezone').value||stored.timezone||null,
+    location:locData[prefix].city||stored.location||null,
+    timezone:locData[prefix].timezone||stored.timezone||null,
     // Extra dimensions from assessment — defaults used for Founder B (not collected on this form)
     tooling_affinity:stored.tooling_affinity||'pragmatic',
     domain_expertise:stored.domain_expertise||'generalist',
@@ -897,8 +937,8 @@ if(saved.communication_style)document.getElementById('a_comm').value=saved.commu
 if(saved.execution_style)document.getElementById('a_exec').value=saved.execution_style;
 if(saved.conflict_approach)document.getElementById('a_conflict').value=saved.conflict_approach;
 if(saved.github_username)document.getElementById('a_github').value=saved.github_username;
-if(saved.location)document.getElementById('a_location').value=saved.location;
-if(saved.timezone)document.getElementById('a_timezone').value=saved.timezone;
+// Restore location from localStorage if available
+if(saved.location)setLoc('a',saved.location,saved.timezone||null,'saved profile');
 </script>
 <script src="mascot.js"></script>
 </body>

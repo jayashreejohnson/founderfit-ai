@@ -128,22 +128,6 @@
           <option value="transitioning">Transitioning — leaving job soon</option>
         </select>
       </div>
-      <div class="field-row">
-        <div class="field"><label>Location <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.75rem">(optional)</span></label><input type="text" id="location" placeholder="e.g. New York, NY"/></div>
-        <div class="field"><label>Timezone <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.75rem">(optional)</span></label>
-          <select id="timezone">
-            <option value="">— select —</option>
-            <option value="EST">EST (UTC−5)</option>
-            <option value="CST">CST (UTC−6)</option>
-            <option value="MST">MST (UTC−7)</option>
-            <option value="PST">PST (UTC−8)</option>
-            <option value="GMT">GMT (UTC+0)</option>
-            <option value="CET">CET (UTC+1)</option>
-            <option value="IST">IST (UTC+5:30)</option>
-            <option value="SGT">SGT (UTC+8)</option>
-          </select>
-        </div>
-      </div>
       <div class="field">
         <label>LinkedIn PDF <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.75rem"> &mdash; <a href="https://www.youtube.com/watch?v=YrplE62daWQ" target="_blank" style="color:#818cf8">how do I export my LinkedIn as a PDF?</a> &nbsp;(optional)</span></label>
         <div class="resume-drop" id="resume_drop" onclick="document.getElementById('resume_file').click()">
@@ -157,6 +141,10 @@
           <span>&#128196;</span><span id="cv_label">Click to upload your resume PDF</span>
         </div>
         <input id="cv_file" type="file" accept=".pdf" style="display:none" onchange="handleCvUpload(this)"/>
+      </div>
+      <div class="field">
+        <div id="loc_detected" style="display:none;align-items:center;gap:.5rem;font-size:.8rem;color:#a5b4fc;padding:.45rem .75rem;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.15);border-radius:.5rem;margin-bottom:.25rem">📍 <span id="loc_text"></span><span id="tz_text" style="color:var(--muted)"></span><span id="loc_src" style="color:var(--muted);font-size:.7rem;font-style:italic"></span><button onclick="clearLocOnboard()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.75rem;margin-left:auto;line-height:1;font-family:inherit">✕</button></div>
+        <div id="loc_prompt"><button onclick="toggleLocOnboard()" style="background:none;border:none;color:var(--muted);font-size:.8rem;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:.375rem;padding:.2rem 0">📍 <span>Add location (optional)</span></button><div id="loc_inp" style="display:none;margin-top:.625rem"><div style="display:flex;gap:.5rem;align-items:center"><input id="loc_manual" placeholder="City, State" style="flex:1;margin-bottom:0;font-size:.85rem;padding:.6rem .875rem"/><select id="tz_manual" style="width:90px;margin-bottom:0;font-size:.85rem;padding:.6rem"><option value="">TZ</option><option value="EST">EST</option><option value="CST">CST</option><option value="MST">MST</option><option value="PST">PST</option><option value="GMT">GMT</option><option value="CET">CET</option><option value="IST">IST</option><option value="SGT">SGT</option></select><button onclick="saveLocOnboard()" style="padding:.6rem .875rem;background:var(--primary);border:none;border-radius:.5rem;color:#fff;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit">Save</button></div></div></div>
       </div>
       <div class="actions"><button class="btn-next" onclick="goToStep(2)">Continue</button></div>
     </div>
@@ -237,6 +225,7 @@
       label.textContent = '✓ ' + file.name;
       drop.style.borderColor = 'var(--success)';
       drop.style.color = 'var(--success)';
+      trySetLocOnboard(data.text, 'LinkedIn');
     }catch(e){
       label.textContent = '⚠ ' + e.message;
       drop.style.borderColor = 'var(--error)';
@@ -265,12 +254,74 @@
       label.textContent = '✓ ' + file.name;
       drop.style.borderColor = 'var(--success)';
       drop.style.color = 'var(--success)';
+      if(!locObj.city) trySetLocOnboard(data.text, 'CV');
     }catch(e){
       label.textContent = '⚠ ' + e.message;
       drop.style.borderColor = 'var(--error)';
       drop.style.color = 'var(--error)';
       cvText = null;
     }
+  }
+
+  // ── LOCATION ─────────────────────────────────────────────────────
+  const locObj={city:null,timezone:null};
+  function extractLoc(text){
+    if(!text)return null;
+    const lines=text.split('\n').slice(0,40);
+    for(const line of lines){
+      const t=line.trim();
+      if(!t||t.length>60||t.length<3||t.includes('@')||t.includes('http')||/^\d/.test(t))continue;
+      const m=t.match(/^([A-Z][a-zA-Z\s\-\.]+),\s*([A-Z][a-zA-Z\s]+?)(?:,\s*.+)?$/);
+      if(m)return t.replace(/,\s*United States$|,\s*USA$/i,'').trim();
+    }
+    const lm=text.match(/(?:Location|Based in|City)[:\s]+([A-Z][a-zA-Z\s]+(?:,\s*[A-Z][a-zA-Z\s]+)*)/i);
+    return lm?lm[1].trim().substring(0,50):null;
+  }
+  const CTZMAP={'new york':'EST','brooklyn':'EST','boston':'EST','miami':'EST','atlanta':'EST','philadelphia':'EST','washington':'EST','toronto':'EST',
+    'chicago':'CST','houston':'CST','dallas':'CST','austin':'CST',
+    'denver':'MST','phoenix':'MST',
+    'san francisco':'PST','los angeles':'PST','seattle':'PST','portland':'PST','san jose':'PST','san diego':'PST','vancouver':'PST',
+    'london':'GMT','dublin':'GMT','paris':'CET','berlin':'CET','amsterdam':'CET',
+    'bangalore':'IST','mumbai':'IST','delhi':'IST','hyderabad':'IST',
+    'singapore':'SGT','hong kong':'SGT','shanghai':'SGT','beijing':'SGT'};
+  function inferTzOnboard(loc){
+    if(!loc)return null;
+    const l=loc.toLowerCase();
+    for(const[c,t]of Object.entries(CTZMAP))if(l.includes(c))return t;
+    if(/,\s*(ny|nj|ma|ct|pa|dc|md|va|nc|ga|fl)\b/i.test(loc))return 'EST';
+    if(/,\s*(il|tx|mn|mo|wi|la|tn)\b/i.test(loc))return 'CST';
+    if(/,\s*(co|az|nm|ut)\b/i.test(loc))return 'MST';
+    if(/,\s*(ca|wa|or|nv)\b/i.test(loc))return 'PST';
+    return null;
+  }
+  function trySetLocOnboard(text,src){
+    const city=extractLoc(text);
+    if(city)applyLocOnboard(city,inferTzOnboard(city),src);
+  }
+  function applyLocOnboard(city,tz,src){
+    locObj.city=city;locObj.timezone=tz||null;
+    document.getElementById('loc_text').textContent=city;
+    document.getElementById('tz_text').textContent=tz?' · '+tz:'';
+    document.getElementById('loc_src').textContent=src?' ('+src+')':'';
+    document.getElementById('loc_detected').style.display='flex';
+    document.getElementById('loc_prompt').style.display='none';
+  }
+  function clearLocOnboard(){
+    locObj.city=null;locObj.timezone=null;
+    document.getElementById('loc_detected').style.display='none';
+    document.getElementById('loc_prompt').style.display='block';
+    document.getElementById('loc_inp').style.display='none';
+  }
+  function toggleLocOnboard(){
+    const el=document.getElementById('loc_inp');
+    el.style.display=el.style.display==='none'?'block':'none';
+  }
+  function saveLocOnboard(){
+    const city=document.getElementById('loc_manual').value.trim();
+    if(!city)return;
+    const tz=document.getElementById('tz_manual').value||inferTzOnboard(city);
+    applyLocOnboard(city,tz,'manual');
+    document.getElementById('loc_inp').style.display='none';
   }
 
   const steps = ['Basic Info','Working Style','Execution'];
@@ -297,8 +348,8 @@
       github_username:document.getElementById('github').value,
       ambition_level:document.getElementById('ambition').value,
       time_commitment:document.getElementById('time_commitment').value,
-      location:document.getElementById('location').value.trim()||null,
-      timezone:document.getElementById('timezone').value||null,
+      location:locObj.city||null,
+      timezone:locObj.timezone||null,
       decision_speed:document.querySelector('[name=decision_speed]:checked')?.value||'moderate',
       risk_tolerance:document.querySelector('[name=risk_tolerance]:checked')?.value||'moderate',
       communication_style:document.querySelector('[name=communication_style]:checked')?.value||'balanced',
