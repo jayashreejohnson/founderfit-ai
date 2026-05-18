@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>FounderFit â€” Build Your Profile</title>
+<title>FounderFit — Build Your Profile</title>
 <style>
   :root{--bg:#08080f;--surface:#0f0f1a;--card:#13131f;--border:#1e1e30;--primary:#6366f1;--purple:#a855f7;--text:#e2e8f0;--muted:#64748b;--success:#22c55e;--error:#ef4444}
   *{margin:0;padding:0;box-sizing:border-box}
@@ -83,11 +83,11 @@
 <div class="layout">
   <div class="side-panel">
     <h2>Build your founder <span>profile</span></h2>
-    <p>This takes 2 minutes. Your answers power the AI compatibility analysis â€” be honest, not aspirational.</p>
+    <p>This takes 2 minutes. Your answers power the AI compatibility analysis — be honest, not aspirational.</p>
     <div class="side-benefits">
-      <div class="benefit"><div class="benefit-icon">ðŸ§ </div><div><h4>Behavioral, not biographical</h4><p>We care how you work, not where you went to school.</p></div></div>
-      <div class="benefit"><div class="benefit-icon">ðŸ”’</div><div><h4>Private by default</h4><p>Your profile is only used when you initiate a compatibility analysis.</p></div></div>
-      <div class="benefit"><div class="benefit-icon">âš¡</div><div><h4>Instant archetype</h4><p>Get your founder archetype the moment you finish.</p></div></div>
+      <div class="benefit"><div class="benefit-icon">🧠</div><div><h4>Behavioral, not biographical</h4><p>We care how you work, not where you went to school.</p></div></div>
+      <div class="benefit"><div class="benefit-icon">🔒</div><div><h4>Private by default</h4><p>Your profile is only used when you initiate a compatibility analysis.</p></div></div>
+      <div class="benefit"><div class="benefit-icon">⚡</div><div><h4>Instant archetype</h4><p>Get your founder archetype the moment you finish.</p></div></div>
     </div>
   </div>
 
@@ -100,7 +100,7 @@
         <div class="prog-line" id="line2"></div>
         <div class="prog-step"><div class="prog-dot pending" id="dot3">3</div></div>
       </div>
-      <div class="prog-label" id="prog-label">Step 1 of 3 â€” Basic Info</div>
+      <div class="prog-label" id="prog-label">Step 1 of 3 — Basic Info</div>
     </div>
 
     <!-- STEP 1 -->
@@ -115,17 +115,17 @@
         <div class="field"><label>GitHub Username</label><input type="text" id="github" placeholder="username" /></div>
         <div class="field"><label>Ambition Level</label>
           <select id="ambition">
-            <option value="high">High â€” building something massive</option>
-            <option value="moderate">Moderate â€” solid outcome is fine</option>
-            <option value="lifestyle">Lifestyle â€” quality over scale</option>
+            <option value="high">High — building something massive</option>
+            <option value="moderate">Moderate — solid outcome is fine</option>
+            <option value="lifestyle">Lifestyle — quality over scale</option>
           </select>
         </div>
       </div>
       <div class="field"><label>Time Commitment</label>
         <select id="time_commitment">
-          <option value="full_time">Full-time â€” all in</option>
-          <option value="part_time">Part-time â€” side project for now</option>
-          <option value="transitioning">Transitioning â€” leaving job soon</option>
+          <option value="full_time">Full-time — all in</option>
+          <option value="part_time">Part-time — side project for now</option>
+          <option value="transitioning">Transitioning — leaving job soon</option>
         </select>
       </div>
       <div class="field">
@@ -135,7 +135,7 @@
         </div>
         <input id="resume_file" type="file" accept=".pdf" style="display:none" onchange="handleResumeUpload(this)"/>
       </div>
-      <div class="actions"><button class="btn-next" onclick="goToStep(2)">Continue â†’</button></div>
+      <div class="actions"><button class="btn-next" onclick="goToStep(2)">Continue →</button></div>
     </div>
 
     <!-- STEP 2 -->
@@ -159,13 +159,13 @@
       </div>
       <div class="actions">
         <button class="btn-back-step" onclick="goToStep(1)">â† Back</button>
-        <button class="btn-next" onclick="goToStep(3)">Continue â†’</button>
+        <button class="btn-next" onclick="goToStep(3)">Continue →</button>
       </div>
     </div>
 
     <!-- STEP 3 -->
     <div class="step" id="step3">
-      <div class="step-header"><h2>How do you work?</h2><p>Day-to-day operating style â€” where most co-founder friction actually lives.</p></div>
+      <div class="step-header"><h2>How do you work?</h2><p>Day-to-day operating style — where most co-founder friction actually lives.</p></div>
       <div class="field">
         <label>Communication Style</label>
         <div class="choices">
@@ -184,7 +184,7 @@
       </div>
       <div class="actions">
         <button class="btn-back-step" onclick="goToStep(2)">â† Back</button>
-        <button class="btn-next" onclick="submitProfile()">Go to Assessment â†’</button>
+        <button class="btn-next" onclick="submitProfile()">Go to Assessment →</button>
       </div>
     </div>
   </div>
@@ -227,7 +227,7 @@
       d.className='prog-dot '+(i<n-1?'done':i===n-1?'active':'pending');
     });
     ['line1','line2'].forEach((id,i)=>{document.getElementById(id).className='prog-line '+(i<n-1?'done':'');});
-    document.getElementById('prog-label').textContent=`Step ${n} of 3 â€” ${steps[n-1]}`;
+    document.getElementById('prog-label').textContent=`Step ${n} of 3 — ${steps[n-1]}`;
   }
   function selectChoice(el,name,val){
     document.querySelectorAll(`[name="${name}"]`).forEach(r=>r.closest('.choice').classList.remove('selected'));
