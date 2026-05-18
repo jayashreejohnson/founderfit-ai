@@ -104,16 +104,7 @@
   .breakdown-section{margin-bottom:.875rem}
   .breakdown-label{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.375rem}
   .breakdown-text{font-size:.82rem;color:var(--text);line-height:1.7}
-  /* UPLOAD ENRICHMENT ZONE */
-  .resume-optional{font-size:.62rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:.1rem .4rem;background:var(--surface);border:1px solid var(--border);border-radius:9999px}
-  .upload-enrichment-zone{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1rem 1.25rem;margin-bottom:1.5rem}
-  .upload-enrichment-title{font-size:.78rem;font-weight:600;margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem}
-  .upload-enrichment-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
-  @media(max-width:560px){.upload-enrichment-grid{grid-template-columns:1fr}}
-  .upload-field-label{font-size:.75rem;font-weight:600;margin-bottom:.15rem}
-  .upload-field-sub{font-size:.68rem;color:var(--muted);margin-bottom:.5rem;line-height:1.4}
-  .upload-drop{padding:.5rem .875rem;border:1px dashed var(--border);border-radius:.5rem;cursor:pointer;font-size:.75rem;color:var(--muted);transition:all .2s;text-align:center}
-  .upload-drop:hover{border-color:var(--blue);color:var(--text)}</style>
+</style>
 </head>
 <body>
 <nav>
@@ -124,29 +115,6 @@
 <div class="main">
 
   <div id="quiz-section">
-    <!-- UPLOAD ENRICHMENT (optional) -->
-    <div class="upload-enrichment-zone">
-      <div class="upload-enrichment-title">Enrich your analysis <span class="resume-optional">optional</span></div>
-      <div class="upload-enrichment-grid">
-        <div class="upload-field">
-          <div class="upload-field-label">LinkedIn PDF</div>
-          <div class="upload-field-sub">Export from LinkedIn settings — <a href="https://www.youtube.com/watch?v=YrplE62daWQ" target="_blank" style="color:#a5b4fc">how do I export my LinkedIn as a PDF?</a></div>
-          <div id="linkedin-drop" class="upload-drop" onclick="document.getElementById('linkedin-input').click()">
-            <span id="linkedin-label">Click to upload</span>
-          </div>
-          <input id="linkedin-input" type="file" accept=".pdf" style="display:none" onchange="handleLinkedinUpload(this)"/>
-        </div>
-        <div class="upload-field">
-          <div class="upload-field-label">Resume / CV</div>
-          <div class="upload-field-sub">PDF of your resume or CV</div>
-          <div id="cv-drop" class="upload-drop" onclick="document.getElementById('cv-input').click()">
-            <span id="cv-label">Click to upload</span>
-          </div>
-          <input id="cv-input" type="file" accept=".pdf" style="display:none" onchange="handleCvUpload(this)"/>
-        </div>
-      </div>
-    </div>
-
     <div class="prog-wrap">
       <div class="prog-info"><span id="q-counter">Question 1 of 10</span><span id="q-pct">10%</span></div>
       <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:10%"></div></div>
@@ -174,60 +142,6 @@
 </div>
 
 <script>
-async function handleLinkedinUpload(input){
-  const file=input.files[0];
-  if(!file)return;
-  const label=document.getElementById('linkedin-label');
-  const drop=document.getElementById('linkedin-drop');
-  label.textContent='Uploading…';
-  drop.style.borderColor='var(--blue)';
-  try{
-    const form=new FormData();
-    form.append('file',file);
-    const res=await fetch('/api/upload/resume',{method:'POST',body:form});
-    if(!res.ok){const e=await res.json();throw new Error(e.detail||'Upload failed');}
-    const data=await res.json();
-    // Persist into founderProfile so showResults() picks it up
-    const profile=JSON.parse(localStorage.getItem('founderProfile')||'{}');
-    profile.resume_text=data.text;
-    localStorage.setItem('founderProfile',JSON.stringify(profile));
-    label.textContent='✓ '+file.name+' ('+Math.round(data.char_count/100)/10+'k chars)';
-    drop.style.borderColor='var(--emerald)';
-    drop.style.color='var(--emerald)';
-  }catch(e){
-    label.textContent='⚠ '+e.message;
-    drop.style.borderColor='var(--rose)';
-    drop.style.color='var(--rose)';
-  }
-}
-
-async function handleCvUpload(input){
-  const file=input.files[0];
-  if(!file)return;
-  const label=document.getElementById('cv-label');
-  const drop=document.getElementById('cv-drop');
-  label.textContent='Uploading…';
-  drop.style.borderColor='var(--blue)';
-  try{
-    const form=new FormData();
-    form.append('file',file);
-    const res=await fetch('/api/upload/resume',{method:'POST',body:form});
-    if(!res.ok){const e=await res.json();throw new Error(e.detail||'Upload failed');}
-    const data=await res.json();
-    // Persist into founderProfile so showResults() picks it up
-    const profile=JSON.parse(localStorage.getItem('founderProfile')||'{}');
-    profile.resume_pdf_text=data.text;
-    localStorage.setItem('founderProfile',JSON.stringify(profile));
-    label.textContent='✓ '+file.name+' ('+Math.round(data.char_count/100)/10+'k chars)';
-    drop.style.borderColor='var(--emerald)';
-    drop.style.color='var(--emerald)';
-  }catch(e){
-    label.textContent='⚠ '+e.message;
-    drop.style.borderColor='var(--rose)';
-    drop.style.color='var(--rose)';
-  }
-}
-
 const DIM_COLORS={
   'Execution Style':'#4f7cff','Communication Cadence':'#06b6d4','Decision-Making':'#8b5cf6',
   'Risk Posture':'#f43f5e','Conflict Resolution':'#f59e0b','Tooling Affinity':'#a78bfa',
