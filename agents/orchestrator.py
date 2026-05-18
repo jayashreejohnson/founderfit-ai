@@ -39,32 +39,38 @@ def _run_agent(agent, message):
         logger.error("Agent %s failed: %s", agent.name, e)
         return None
 
-def run_founder_analysis(founder_a_profile, founder_b_profile, github_data_a=None, github_data_b=None, resume_text_a=None, resume_text_b=None):
+def run_founder_analysis(founder_a_profile, founder_b_profile, github_data_a=None, github_data_b=None, resume_text_a=None, resume_text_b=None, resume_pdf_text_a=None, resume_pdf_text_b=None):
     llm_config = get_llm_config()
 
     conversation = []
     compat_summary = None
 
-    # Run Resume Analyst first — extracts professional background signals from LinkedIn PDF text
+    # Run Resume Analyst first — extracts professional background signals from LinkedIn PDF and/or resume/CV
     resume_story_a = None
     resume_story_b = None
-    if resume_text_a or resume_text_b:
+    if resume_text_a or resume_text_b or resume_pdf_text_a or resume_pdf_text_b:
         resume_analyst = create_resume_agent(llm_config)
-        if resume_text_a:
+        if resume_text_a or resume_pdf_text_a:
             logger.info("Running Resume Analyst for Founder A")
-            raw = _run_agent(
-                resume_analyst,
-                f"Analyze this LinkedIn/resume profile for {founder_a_profile.get('name', 'Founder A')}:\n{resume_text_a}"
-            )
+            parts = []
+            if resume_text_a:
+                parts.append(f"[LINKEDIN PDF]\n{resume_text_a}")
+            if resume_pdf_text_a:
+                parts.append(f"[RESUME/CV]\n{resume_pdf_text_a}")
+            msg = f"Analyze these professional documents for {founder_a_profile.get('name', 'Founder A')}:\n\n" + "\n\n".join(parts)
+            raw = _run_agent(resume_analyst, msg)
             if raw:
                 resume_story_a = raw
                 conversation.append({"agent": "resume_analyst_a", "response": raw})
-        if resume_text_b:
+        if resume_text_b or resume_pdf_text_b:
             logger.info("Running Resume Analyst for Founder B")
-            raw = _run_agent(
-                resume_analyst,
-                f"Analyze this LinkedIn/resume profile for {founder_b_profile.get('name', 'Founder B')}:\n{resume_text_b}"
-            )
+            parts = []
+            if resume_text_b:
+                parts.append(f"[LINKEDIN PDF]\n{resume_text_b}")
+            if resume_pdf_text_b:
+                parts.append(f"[RESUME/CV]\n{resume_pdf_text_b}")
+            msg = f"Analyze these professional documents for {founder_b_profile.get('name', 'Founder B')}:\n\n" + "\n\n".join(parts)
+            raw = _run_agent(resume_analyst, msg)
             if raw:
                 resume_story_b = raw
                 conversation.append({"agent": "resume_analyst_b", "response": raw})
@@ -189,7 +195,7 @@ Now speak directly to both founders together. Write the compatibility narrative.
         "stack": tool_stack,
     }
 
-def run_assessment_synthesis(profile, self_report_archetype, github_data=None, resume_text=None):
+def run_assessment_synthesis(profile, self_report_archetype, github_data=None, resume_text=None, resume_pdf_text=None):
     """Run GitHub Storyteller + Resume Analyst + Synthesis Agent for the assessment flow."""
     llm_config = get_llm_config()
     github_story = None
@@ -203,13 +209,16 @@ def run_assessment_synthesis(profile, self_report_archetype, github_data=None, r
             f"Analyze this GitHub profile for {profile.get('name', 'this founder')}:\n{json.dumps(github_data, indent=2)}"
         )
 
-    if resume_text:
+    if resume_text or resume_pdf_text:
         logger.info("Assessment: running Resume Analyst")
         resume_analyst = create_resume_agent(llm_config)
-        resume_story = _run_agent(
-            resume_analyst,
-            f"Analyze this LinkedIn/resume profile for {profile.get('name', 'this founder')}:\n{resume_text}"
-        )
+        parts = []
+        if resume_text:
+            parts.append(f"[LINKEDIN PDF]\n{resume_text}")
+        if resume_pdf_text:
+            parts.append(f"[RESUME/CV]\n{resume_pdf_text}")
+        msg = f"Analyze these professional documents for {profile.get('name', 'this founder')}:\n\n" + "\n\n".join(parts)
+        resume_story = _run_agent(resume_analyst, msg)
 
     logger.info("Assessment: running Synthesis Agent")
     synthesis_prompt = f"""Synthesize the founder profile for {profile.get('name', 'this founder')}.
@@ -217,7 +226,7 @@ def run_assessment_synthesis(profile, self_report_archetype, github_data=None, r
 **Self-reported archetype from questionnaire:** {self_report_archetype}
 
 **Questionnaire answers:**
-{json.dumps({k: v for k, v in profile.items() if k not in ('name', 'email', 'github_username', 'linkedin_url', 'resume_text', 'domain_expertise_list', 'tool_preferences')}, indent=2)}
+{json.dumps({k: v for k, v in profile.items() if k not in ('name', 'email', 'github_username', 'linkedin_url', 'resume_text', 'resume_pdf_text', 'domain_expertise_list', 'tool_preferences')}, indent=2)}
 """
     if github_story:
         synthesis_prompt += f"\n**GitHub Builder Story:**\n{github_story}\n"
@@ -246,7 +255,7 @@ def run_assessment_synthesis(profile, self_report_archetype, github_data=None, r
     logger.info("Assessment: running Communicator Agent")
     communicator_context = f"Write an individual founder narrative for {profile.get('name', 'this founder')}.\n\n"
     communicator_context += f"[QUESTIONNAIRE — self-reported archetype: {self_report_archetype}]\n"
-    communicator_context += json.dumps({k: v for k, v in profile.items() if k not in ('name', 'email', 'github_username', 'linkedin_url', 'resume_text', 'domain_expertise_list', 'tool_preferences')}, indent=2) + "\n\n"
+    communicator_context += json.dumps({k: v for k, v in profile.items() if k not in ('name', 'email', 'github_username', 'linkedin_url', 'resume_text', 'resume_pdf_text', 'domain_expertise_list', 'tool_preferences')}, indent=2) + "\n\n"
     if github_story:
         communicator_context += f"[GITHUB BUILDER STORY]\n{github_story}\n\n"
     if resume_story:

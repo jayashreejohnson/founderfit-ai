@@ -109,7 +109,7 @@
   .full-card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;margin-bottom:1.25rem}
   .rec-item{padding:.75rem 1rem;background:var(--surface);border-radius:.5rem;margin-bottom:.5rem;font-size:.85rem;color:var(--muted);line-height:1.6;display:flex;gap:.75rem;align-items:flex-start}
   .rec-item:last-child{margin-bottom:0}
-  .rec-item::before{content:’\2192’;color:var(--primary);flex-shrink:0;font-weight:700}
+  .rec-item::before{content:’·’;color:var(--primary);flex-shrink:0;font-weight:700}
   /* STACK SECTION */
   .stack-section{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;margin-bottom:1.25rem}
   .stack-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.25rem}
@@ -211,6 +211,11 @@
           <span>&#128206;</span><span id="a_resume_label">Click to upload PDF</span>
         </div>
         <input id="a_resume_input" type="file" accept=".pdf" style="display:none" onchange="handleResumeUpload('a', this)"/>
+        <label>Resume / CV <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</span></label>
+        <div id="a_cv_drop" style="border:1px dashed var(--border);border-radius:.5rem;padding:.75rem 1rem;cursor:pointer;transition:border-color .2s;margin-bottom:1rem;font-size:.8rem;color:var(--muted);display:flex;align-items:center;gap:.5rem" onclick="document.getElementById('a_cv_input').click()">
+          <span>&#128196;</span><span id="a_cv_label">Click to upload PDF</span>
+        </div>
+        <input id="a_cv_input" type="file" accept=".pdf" style="display:none" onchange="handleCvUpload('a', this)"/>
       </div>
 
       <div class="vs-divider">
@@ -276,25 +281,23 @@
           <span>&#128206;</span><span id="b_resume_label">Click to upload PDF</span>
         </div>
         <input id="b_resume_input" type="file" accept=".pdf" style="display:none" onchange="handleResumeUpload('b', this)"/>
+        <label>Resume / CV <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</span></label>
+        <div id="b_cv_drop" style="border:1px dashed var(--border);border-radius:.5rem;padding:.75rem 1rem;cursor:pointer;transition:border-color .2s;margin-bottom:1rem;font-size:.8rem;color:var(--muted);display:flex;align-items:center;gap:.5rem" onclick="document.getElementById('b_cv_input').click()">
+          <span>&#128196;</span><span id="b_cv_label">Click to upload PDF</span>
+        </div>
+        <input id="b_cv_input" type="file" accept=".pdf" style="display:none" onchange="handleCvUpload('b', this)"/>
       </div>
     </div>
 
     <!-- AGENT PIPELINE -->
     <div class="pipeline" id="pipeline">
       <div class="agent-chip" id="chip-resume"><div class="chip-dot"></div>Resume Analyst</div>
-      <div class="chip-arrow">&#8594;</div>
       <div class="agent-chip" id="chip-storyteller"><div class="chip-dot"></div>GitHub Storyteller</div>
-      <div class="chip-arrow">&#8594;</div>
       <div class="agent-chip" id="chip-synthesis"><div class="chip-dot"></div>Synthesis</div>
-      <div class="chip-arrow">&#8594;</div>
       <div class="agent-chip" id="chip-compatibility"><div class="chip-dot"></div>Compatibility</div>
-      <div class="chip-arrow">&#8594;</div>
       <div class="agent-chip" id="chip-gtm"><div class="chip-dot"></div>GTM Strategist</div>
-      <div class="chip-arrow">&#8594;</div>
       <div class="agent-chip" id="chip-matchmaker"><div class="chip-dot"></div>Matchmaker</div>
-      <div class="chip-arrow">&#8594;</div>
       <div class="agent-chip" id="chip-repotale"><div class="chip-dot"></div>RepoTale</div>
-      <div class="chip-arrow">&#8594;</div>
       <div class="agent-chip" id="chip-communicator"><div class="chip-dot"></div>Communicator</div>
     </div>
 
@@ -312,7 +315,7 @@
   <div id="results-section">
     <div class="results-header">
       <h2 id="results-title">Compatibility Report</h2>
-      <button class="btn-reset" onclick="resetAnalysis()">← New Analysis</button>
+      <button class="btn-reset" onclick="resetAnalysis()">New Analysis</button>
     </div>
 
     <div class=”score-hero”>
@@ -363,6 +366,7 @@
 <script>
 const agentOrder=['resume','storyteller','synthesis','compatibility','gtm','matchmaker','repotale','communicator'];
 const resumeTexts={a:null,b:null};
+const cvTexts={a:null,b:null};
 
 async function handleResumeUpload(prefix, input){
   const file=input.files[0];
@@ -389,6 +393,33 @@ async function handleResumeUpload(prefix, input){
     dropEl.style.borderColor='var(--error)';
     dropEl.style.color='var(--error)';
     resumeTexts[prefix]=null;
+  }
+}
+async function handleCvUpload(prefix, input){
+  const file=input.files[0];
+  if(!file)return;
+  const labelEl=document.getElementById(prefix+'_cv_label');
+  const dropEl=document.getElementById(prefix+'_cv_drop');
+  labelEl.textContent='Uploading...';
+  dropEl.style.borderColor='var(--primary)';
+  try{
+    const form=new FormData();
+    form.append('file',file);
+    const res=await fetch('/api/upload/resume',{method:'POST',body:form});
+    if(!res.ok){
+      const err=await res.json();
+      throw new Error(err.detail||'Upload failed');
+    }
+    const data=await res.json();
+    cvTexts[prefix]=data.text;
+    labelEl.textContent='✓ '+file.name+' ('+Math.round(data.char_count/100)/10+'k chars)';
+    dropEl.style.borderColor='var(--success)';
+    dropEl.style.color='var(--success)';
+  }catch(e){
+    labelEl.textContent='⚠ '+e.message;
+    dropEl.style.borderColor='var(--error)';
+    dropEl.style.color='var(--error)';
+    cvTexts[prefix]=null;
   }
 }
 const loadingMessages=['Resume Analyst reading LinkedIn PDF…','GitHub Storyteller building narrative…','Synthesis Agent reasoning across all signals…','Compatibility Agent scoring ten dimensions…','GTM Strategist mapping archetype…','Matchmaker evaluating the pairing…','RepoTale analyzing GitHub compatibility…','Communicator writing your narrative…','Assembling final report…'];
@@ -459,7 +490,7 @@ async function runAnalysis(){
   const a=buildProfile('a'),b=buildProfile('b');
   let result;
   try{
-    const res=await fetch('/api/analyze/compatibility',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({founder_a:a,founder_b:b,resume_text_a:resumeTexts.a||null,resume_text_b:resumeTexts.b||null})});
+    const res=await fetch('/api/analyze/compatibility',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({founder_a:a,founder_b:b,resume_text_a:resumeTexts.a||null,resume_text_b:resumeTexts.b||null,resume_pdf_text_a:cvTexts.a||null,resume_pdf_text_b:cvTexts.b||null})});
     if(!res.ok)throw new Error();
     const data=await res.json();
     result=data; result.narrative=data.narrative||null;

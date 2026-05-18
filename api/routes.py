@@ -65,6 +65,8 @@ async def analyze_compatibility(request: CompatibilityRequest):
             github_data_b=github_data_b,
             resume_text_a=request.resume_text_a,
             resume_text_b=request.resume_text_b,
+            resume_pdf_text_a=request.resume_pdf_text_a,
+            resume_pdf_text_b=request.resume_pdf_text_b,
         )
         return CompatibilityResponse(
             status=result["status"],
@@ -99,11 +101,12 @@ async def submit_assessment(profile: FounderProfile):
     synthesis = None
     github_data = None
     resume_text = getattr(profile, "resume_text", None)
+    resume_pdf_text = getattr(profile, "resume_pdf_text", None)
 
     if profile.github_username:
         github_data = await _safe_github_fetch(profile.github_username)
 
-    if github_data or resume_text:
+    if github_data or resume_text or resume_pdf_text:
         try:
             synthesis = await asyncio.to_thread(
                 run_assessment_synthesis,
@@ -111,6 +114,7 @@ async def submit_assessment(profile: FounderProfile):
                 self_report_archetype=archetype,
                 github_data=github_data,
                 resume_text=resume_text,
+                resume_pdf_text=resume_pdf_text,
             )
         except Exception as e:
             logger.warning("Assessment synthesis failed: %s", e)

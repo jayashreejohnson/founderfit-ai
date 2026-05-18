@@ -25,6 +25,7 @@ class FounderProfile(BaseModel):
     github_username: str | None = None
     linkedin_url: str | None = None
     resume_text: str | None = None
+    resume_pdf_text: str | None = None
 
 class CompatibilityRequest(BaseModel):
     founder_a: FounderProfile
@@ -33,6 +34,8 @@ class CompatibilityRequest(BaseModel):
     github_data_b: dict | None = None
     resume_text_a: str | None = None
     resume_text_b: str | None = None
+    resume_pdf_text_a: str | None = None
+    resume_pdf_text_b: str | None = None
 
 class SingleAgentRequest(BaseModel):
     agent_type: str

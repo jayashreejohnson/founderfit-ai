@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -77,7 +77,7 @@
 <body>
 <nav>
   <div class="logo">FounderFit</div>
-  <a href="/" class="nav-back">â† Back to home</a>
+  <a href="/" class="nav-back">Back to home</a>
 </nav>
 
 <div class="layout">
@@ -135,7 +135,14 @@
         </div>
         <input id="resume_file" type="file" accept=".pdf" style="display:none" onchange="handleResumeUpload(this)"/>
       </div>
-      <div class="actions"><button class="btn-next" onclick="goToStep(2)">Continue →</button></div>
+      <div class="field">
+        <label>Resume / CV <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.75rem">&mdash; PDF (optional)</span></label>
+        <div class="resume-drop" id="cv_drop" onclick="document.getElementById('cv_file').click()">
+          <span>&#128196;</span><span id="cv_label">Click to upload your resume PDF</span>
+        </div>
+        <input id="cv_file" type="file" accept=".pdf" style="display:none" onchange="handleCvUpload(this)"/>
+      </div>
+      <div class="actions"><button class="btn-next" onclick="goToStep(2)">Continue</button></div>
     </div>
 
     <!-- STEP 2 -->
@@ -158,8 +165,8 @@
         </div>
       </div>
       <div class="actions">
-        <button class="btn-back-step" onclick="goToStep(1)">â† Back</button>
-        <button class="btn-next" onclick="goToStep(3)">Continue →</button>
+        <button class="btn-back-step" onclick="goToStep(1)">Back</button>
+        <button class="btn-next" onclick="goToStep(3)">Continue</button>
       </div>
     </div>
 
@@ -183,8 +190,8 @@
         </div>
       </div>
       <div class="actions">
-        <button class="btn-back-step" onclick="goToStep(2)">â† Back</button>
-        <button class="btn-next" onclick="submitProfile()">Go to Assessment →</button>
+        <button class="btn-back-step" onclick="goToStep(2)">Back</button>
+        <button class="btn-next" onclick="submitProfile()">Go to Assessment</button>
       </div>
     </div>
   </div>
@@ -192,6 +199,7 @@
 
 <script>
   let resumeText = null;
+  let cvText = null;
 
   async function handleResumeUpload(input){
     const file = input.files[0];
@@ -215,6 +223,34 @@
       drop.style.borderColor = 'var(--error)';
       drop.style.color = 'var(--error)';
       resumeText = null;
+    }
+  }
+
+  async function handleCvUpload(input){
+    const file = input.files[0];
+    if(!file) return;
+    const label = document.getElementById('cv_label');
+    const drop = document.getElementById('cv_drop');
+    label.textContent = 'Uploading...';
+    drop.style.borderColor = 'var(--primary)';
+    try{
+      const form = new FormData();
+      form.append('file', file);
+      const res = await fetch('/api/upload/resume', {method:'POST', body:form});
+      if(!res.ok) throw new Error((await res.json()).detail || 'Upload failed');
+      const data = await res.json();
+      cvText = data.text;
+      const profile = JSON.parse(localStorage.getItem('founderProfile') || '{}');
+      profile.resume_pdf_text = data.text;
+      localStorage.setItem('founderProfile', JSON.stringify(profile));
+      label.textContent = '✓ ' + file.name;
+      drop.style.borderColor = 'var(--success)';
+      drop.style.color = 'var(--success)';
+    }catch(e){
+      label.textContent = '⚠ ' + e.message;
+      drop.style.borderColor = 'var(--error)';
+      drop.style.color = 'var(--error)';
+      cvText = null;
     }
   }
 
@@ -248,6 +284,7 @@
       execution_style:document.querySelector('[name=execution_style]:checked')?.value||'steady',
     };
     if(resumeText) profile.resume_text = resumeText;
+    if(cvText) profile.resume_pdf_text = cvText;
     localStorage.setItem('founderProfile',JSON.stringify(profile));
     window.location.href='/assessment.html';
   }
