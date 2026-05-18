@@ -1,3 +1,5 @@
+import asyncio
+import logging
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from api.models import (
@@ -5,21 +7,48 @@ from api.models import (
     AssessmentResponse, CompatibilityResponse,
 )
 from agents.orchestrator import run_founder_analysis, run_single_agent_analysis
+from tools.github_analyzer import fetch_github_profile
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 @router.get("/health")
 async def health_check():
     return {"status": "healthy", "service": "founderfit-api", "version": "0.1.0"}
 
+async def _safe_github_fetch(username: str | None) -> dict | None:
+    """Fetch GitHub profile, returning None silently on any failure."""
+    if not username or not username.strip():
+        return None
+    try:
+        data = await fetch_github_profile(username.strip())
+        if "error" in data:
+            logger.warning("GitHub fetch failed for %s: %s", username, data["error"])
+            return None
+        return data
+    except Exception as e:
+        logger.warning("GitHub fetch error for %s: %s", username, e)
+        return None
+
 @router.post("/analyze/compatibility", response_model=CompatibilityResponse)
 async def analyze_compatibility(request: CompatibilityRequest):
     try:
-        result = run_founder_analysis(
+        # Fetch GitHub data in parallel if usernames provided
+        github_data_a, github_data_b = await asyncio.gather(
+            _safe_github_fetch(request.founder_a.github_username),
+            _safe_github_fetch(request.founder_b.github_username),
+        )
+        # Allow caller to override with pre-fetched data
+        github_data_a = github_data_a or request.github_data_a
+        github_data_b = github_data_b or request.github_data_b
+
+        # Run the sync agent pipeline in a thread so it doesn't block the event loop
+        result = await asyncio.to_thread(
+            run_founder_analysis,
             founder_a_profile=request.founder_a.model_dump(),
             founder_b_profile=request.founder_b.model_dump(),
-            github_data_a=request.github_data_a,
-            github_data_b=request.github_data_b,
+            github_data_a=github_data_a,
+            github_data_b=github_data_b,
         )
         return CompatibilityResponse(
             status=result["status"],
@@ -27,6 +56,7 @@ async def analyze_compatibility(request: CompatibilityRequest):
             conversation=result.get("conversation", []),
         )
     except Exception as e:
+        logger.error("Compatibility analysis failed: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/analyze/single")
