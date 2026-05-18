@@ -26,6 +26,9 @@ class FounderProfile(BaseModel):
     linkedin_url: str | None = None
     resume_text: str | None = None
     resume_pdf_text: str | None = None
+    # Network Proximity signals
+    location: str | None = None      # e.g. "New York, NY"
+    timezone: str | None = None      # e.g. "EST", "PST", "GMT"
 
 class CompatibilityRequest(BaseModel):
     founder_a: FounderProfile

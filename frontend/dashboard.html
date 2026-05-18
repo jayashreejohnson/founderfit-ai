@@ -134,6 +134,28 @@
   .cat-documentation{background:rgba(14,165,233,.12);color:#7dd3fc}
   .stack-purpose{font-size:.78rem;color:var(--muted);line-height:1.5;margin-bottom:.5rem}
   .stack-why{font-size:.75rem;color:#818cf8;line-height:1.5;font-style:italic}
+  /* PRE-COMMITMENT PLAYBOOK */
+  .playbook-section{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;margin-bottom:1.25rem}
+  .playbook-header{margin-bottom:1.5rem}
+  .playbook-header h3{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.5rem}
+  .playbook-subtitle{font-size:.85rem;color:var(--muted);line-height:1.6;font-style:italic}
+  .playbook-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.875rem}
+  .playbook-card{background:var(--surface);border:1px solid var(--border);border-radius:.75rem;padding:1.25rem;transition:all .25s}
+  .playbook-card:hover{border-color:rgba(99,102,241,.3);box-shadow:0 4px 16px rgba(0,0,0,.2)}
+  .playbook-card.discussed{border-color:rgba(34,197,94,.25);opacity:.65}
+  .playbook-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;margin-bottom:.625rem}
+  .playbook-icon{font-size:1.2rem;flex-shrink:0;margin-top:.1rem}
+  .playbook-title{font-size:.875rem;font-weight:700;flex:1;line-height:1.3}
+  .playbook-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;background:none;font-size:.65rem;font-weight:700;color:transparent}
+  .playbook-check:hover{border-color:var(--success);color:rgba(34,197,94,.4)}
+  .playbook-check.checked{background:var(--success);border-color:var(--success);color:#fff}
+  .playbook-context{font-size:.77rem;color:var(--muted);line-height:1.55;margin-bottom:.75rem;font-style:italic}
+  .playbook-questions{display:flex;flex-direction:column;gap:.375rem}
+  .playbook-q{font-size:.77rem;color:#a5b4fc;line-height:1.5;padding-left:.875rem;position:relative}
+  .playbook-q::before{content:'?';position:absolute;left:0;color:rgba(165,180,252,.4);font-size:.7rem;font-weight:800}
+  .playbook-dynamic{border-color:rgba(245,158,11,.2);background:rgba(245,158,11,.03)}
+  .playbook-dynamic .playbook-title{color:#fbbf24}
+  .playbook-dynamic-tag{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#f59e0b;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);border-radius:9999px;padding:.15rem .45rem;margin-left:.4rem;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -204,6 +226,22 @@
             </select>
           </div>
         </div>
+        <div class="field-row">
+          <div><label>Location <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label><input id="a_location" placeholder="e.g. New York, NY"/></div>
+          <div><label>Timezone <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+            <select id="a_timezone">
+              <option value="">— select —</option>
+              <option value="EST">EST (UTC−5)</option>
+              <option value="CST">CST (UTC−6)</option>
+              <option value="MST">MST (UTC−7)</option>
+              <option value="PST">PST (UTC−8)</option>
+              <option value="GMT">GMT (UTC+0)</option>
+              <option value="CET">CET (UTC+1)</option>
+              <option value="IST">IST (UTC+5:30)</option>
+              <option value="SGT">SGT (UTC+8)</option>
+            </select>
+          </div>
+        </div>
         <label>GitHub Username</label>
         <input id="a_github" placeholder="optional"/>
         <label>LinkedIn PDF <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)">(optional — <a href="https://www.youtube.com/watch?v=YrplE62daWQ" target="_blank" style="color:#a5b4fc;text-decoration:underline">how do I export my LinkedIn as a PDF?</a>)</span></label>
@@ -271,6 +309,22 @@
               <option value="competing">Competing</option>
               <option value="collaborative" selected>Collaborative</option>
               <option value="compromising">Compromising</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div><label>Location <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label><input id="b_location" placeholder="e.g. San Francisco, CA"/></div>
+          <div><label>Timezone <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+            <select id="b_timezone">
+              <option value="">— select —</option>
+              <option value="EST">EST (UTC−5)</option>
+              <option value="CST">CST (UTC−6)</option>
+              <option value="MST">MST (UTC−7)</option>
+              <option value="PST">PST (UTC−8)</option>
+              <option value="GMT">GMT (UTC+0)</option>
+              <option value="CET">CET (UTC+1)</option>
+              <option value="IST">IST (UTC+5:30)</option>
+              <option value="SGT">SGT (UTC+8)</option>
             </select>
           </div>
         </div>
@@ -360,6 +414,14 @@
       </div>
       <div class="stack-grid" id="stack-grid"></div>
     </div>
+
+    <div class="playbook-section" id="playbook-section" style="display:none">
+      <div class="playbook-header">
+        <h3>Pre-Commitment Playbook</h3>
+        <div class="playbook-subtitle" id="playbook-subtitle">These are the conversations to have before you commit to building together.</div>
+      </div>
+      <div class="playbook-grid" id="playbook-grid"></div>
+    </div>
   </div>
 </div>
 
@@ -436,6 +498,8 @@ function buildProfile(prefix){
     execution_style:document.getElementById(prefix+'_exec').value,
     conflict_approach:document.getElementById(prefix+'_conflict').value,
     github_username:document.getElementById(prefix+'_github').value,
+    location:document.getElementById(prefix+'_location').value.trim()||stored.location||null,
+    timezone:document.getElementById(prefix+'_timezone').value||stored.timezone||null,
     // Extra dimensions from assessment — defaults used for Founder B (not collected on this form)
     tooling_affinity:stored.tooling_affinity||'pragmatic',
     domain_expertise:stored.domain_expertise||'generalist',
@@ -452,6 +516,15 @@ function localAnalysis(a,b){
     if((va===high&&vb===low)||(va===low&&vb===high))return 35+Math.floor(Math.random()*20);
     return 60+Math.floor(Math.random()*15);
   };
+  const netProx=()=>{
+    if(!a.location&&!b.location)return 65;
+    if(a.location&&b.location){
+      if(a.location.toLowerCase().trim()===b.location.toLowerCase().trim())return 92+Math.floor(Math.random()*8);
+    }
+    if(a.timezone&&b.timezone&&a.timezone===b.timezone)return 78+Math.floor(Math.random()*10);
+    if(a.location&&b.location)return 55+Math.floor(Math.random()*15);
+    return 62;
+  };
   const dims={
     decision_velocity:dimScore(a.decision_speed,b.decision_speed,'fast','deliberate'),
     risk_tolerance:dimScore(a.risk_tolerance,b.risk_tolerance,'high','low'),
@@ -459,8 +532,9 @@ function localAnalysis(a,b){
     execution_pace:dimScore(a.execution_style,b.execution_style,'sprint','steady'),
     vision_alignment:70+Math.floor(Math.random()*20),
     conflict_style:dimScore(a.conflict_approach,b.conflict_approach,'collaborative','competing'),
+    network_proximity:netProx(),
   };
-  const overall=Math.round(Object.values(dims).reduce((s,v)=>s+v,0)/6);
+  const overall=Math.round(Object.values(dims).reduce((s,v)=>s+v,0)/Object.keys(dims).length);
   return{
     overall_score:overall,
     dimensions:Object.fromEntries(Object.entries(dims).map(([k,v])=>[k,{score:v,analysis:''}])),
@@ -540,6 +614,9 @@ function renderResults(r,a,b){
     'Conflict Resolution':'Conflict Resolution','Tooling Affinity':'Tooling Affinity',
     'Domain Coverage':'Domain Coverage','Time & Energy':'Time & Energy',
     'Ownership Philosophy':'Ownership Philosophy','GTM Orientation':'GTM Orientation',
+    'Network Proximity':'Network Proximity',
+    // Local fallback key
+    network_proximity:'Network Proximity',
   };
   const dims=r.dimensions||{};
   document.getElementById('dim-breakdown').innerHTML=Object.entries(dims).map(([k,v])=>{
@@ -559,6 +636,7 @@ function renderResults(r,a,b){
   const recs=r.recommendations||[];
   document.getElementById('recs-list').innerHTML=recs.map(rec=>`<div class="rec-item">${rec}</div>`).join('')||'<p style="color:var(--muted);font-size:.85rem">No recommendations returned.</p>';
   renderStack(r.stack||null, r.archetype||'Velocity Pair');
+  renderPlaybook(r,a,b);
 }
 
 function resetAnalysis(){
@@ -726,6 +804,89 @@ function drawRadar(dims){
   requestAnimationFrame(frame);
 }
 
+/* ── PRE-COMMITMENT PLAYBOOK ─────────────────────────────────────── */
+const PLAYBOOK_CARDS=[
+  {id:'equity',icon:'💰',title:'Equity & Vesting Structure',
+   context:'How you split the company shapes every incentive from day one. Surprises here are expensive.',
+   questions:['What\'s your equity split rationale — equal, contribution-based, or role-weighted?','Are you both doing a 4-year vest with a 1-year cliff?','What happens to unvested equity if one of you leaves in month 6?']},
+  {id:'decisions',icon:'⚖️',title:'Decision Rights & Autonomy',
+   context:'Unclear ownership of decisions is the fastest path to deadlock. Define the defaults now, before a real disagreement forces it.',
+   questions:['Who owns product decisions? Technical decisions? Hiring decisions?','What\'s the threshold for a decision requiring both of you?','What do you do when you genuinely can\'t agree after three rounds?']},
+  {id:'exit',icon:'🎯',title:'Exit Horizon & Ambition Alignment',
+   context:'If one of you wants to sell at $10M and the other at $1B, you\'ll discover it at the worst possible moment.',
+   questions:['What does a genuinely successful outcome look like for each of you?','Acquisition vs. IPO vs. long-term operating company — where does your honest instinct land?','What\'s the minimum outcome that would feel like a real win?']},
+  {id:'breakup',icon:'🤝',title:'The Breakup Clause',
+   context:'Define what "bad enough to exit" looks like before you\'re in the middle of it. Pre-agreed terms are cheaper than lawyer fees.',
+   questions:['What specific scenarios would make you want to exit this partnership?','Do you want a formal co-founder agreement with mediation clauses?','If one of you needs to be bought out, how do you handle the valuation?']},
+  {id:'first90',icon:'🗓️',title:'First 90-Day Operating Agreement',
+   context:'The first three months set the patterns that stick for years. Over-specify now so you don\'t negotiate in real time under pressure.',
+   questions:['What are you explicitly NOT building in the first 90 days?','How often do you sync, and who facilitates?','What\'s the single metric that tells you you\'re on track at day 30?']},
+];
+const DYNAMIC_CARDS={
+  communication:{icon:'💬',title:'Communication Operating Agreement',
+    context:'Your profiles show a communication style mismatch. Set the defaults before it becomes daily friction.',
+    questions:['What\'s your default channel — Slack, email, or a daily call?','What qualifies as urgent enough to interrupt async work?','How long is an acceptable response window for non-urgent messages?']},
+  decision_velocity:{icon:'⚡',title:'Decision Speed Protocol',
+    context:'One of you moves fast, one deliberate. Without a protocol, fast decisions will feel reckless and slow ones will feel like obstruction.',
+    questions:['What\'s your default decision timer by type — 24h, 48h, or 1 week?','Which categories of decision can one founder make unilaterally?','How do you handle time-sensitive calls when one of you is unavailable?']},
+  conflict_style:{icon:'🔥',title:'Conflict Resolution Framework',
+    context:'You have different defaults when a disagreement escalates. Agree on the process before you need it.',
+    questions:['What\'s your first step when you\'re stuck after one conversation?','Are you open to a third party — advisor or mediator — for big disagreements?','How do you prevent small frictions from quietly accumulating into a blowup?']},
+  execution_pace:{icon:'🏃',title:'Execution Pace Agreement',
+    context:'Different pace expectations are a quiet source of resentment. Name the expectation explicitly rather than discovering the gap at month three.',
+    questions:['What\'s a typical expected work week — hours, schedule, intensity?','How do you handle a period when one founder needs to go heads-down?','How do you call out a pace mismatch without it feeling personal?']},
+  risk_tolerance:{icon:'🎲',title:'Risk Appetite Framework',
+    context:'Your risk profiles diverge. What looks bold to one will look reckless to the other. Build a shared vocabulary before a real bet is on the table.',
+    questions:['What\'s the maximum spend or commitment you can make without a joint conversation?','How do you handle a situation where one of you wants a big swing the other thinks is too risky?','What\'s your shared definition of "too risky to proceed"?']},
+  network_proximity:{icon:'🌍',title:'Remote Collaboration Agreement',
+    context:'You\'re operating across different locations or timezones. The founders who handle this well set explicit norms early.',
+    questions:['How many overlap hours per day do you both commit to being available?','How often do you meet in person, and who covers travel costs?','What decisions require a synchronous call vs. async documentation?']},
+};
+const DYNAMIC_DIM_MAP={
+  communication:'communication','Communication Cadence':'communication',
+  decision_velocity:'decision_velocity','Decision-Making':'decision_velocity',
+  conflict_style:'conflict_style','Conflict Resolution':'conflict_style',
+  execution_pace:'execution_pace','Execution Style':'execution_pace',
+  risk_tolerance:'risk_tolerance','Risk Posture':'risk_tolerance',
+  network_proximity:'network_proximity','Network Proximity':'network_proximity',
+};
+
+function renderPlaybook(r,a,b){
+  const section=document.getElementById('playbook-section');
+  const grid=document.getElementById('playbook-grid');
+  document.getElementById('playbook-subtitle').textContent=
+    `Before ${a.name} and ${b.name} commit to building together — these are the conversations that matter most.`;
+  // Find lowest-scoring dimension eligible for a dynamic card
+  const dims=r.dimensions||{};
+  let lowestKey=null,lowestScore=Infinity;
+  Object.entries(dims).forEach(([k,v])=>{
+    const score=typeof v==='object'?v.score:v;
+    const mapped=DYNAMIC_DIM_MAP[k];
+    if(mapped&&score<lowestScore){lowestScore=score;lowestKey=mapped;}
+  });
+  const cards=[...PLAYBOOK_CARDS];
+  if(lowestKey&&DYNAMIC_CARDS[lowestKey]&&lowestScore<72){
+    cards.push({...DYNAMIC_CARDS[lowestKey],id:'dynamic',dynamic:true});
+  }
+  grid.innerHTML=cards.map(c=>`
+    <div class="playbook-card${c.dynamic?' playbook-dynamic':''}" id="pcard-${c.id}">
+      <div class="playbook-card-top">
+        <span class="playbook-icon">${c.icon}</span>
+        <span class="playbook-title">${c.title}${c.dynamic?'<span class="playbook-dynamic-tag">Flagged</span>':''}</span>
+        <div class="playbook-check" id="pcheck-${c.id}" onclick="togglePlaybook('${c.id}')">&#10003;</div>
+      </div>
+      <div class="playbook-context">${c.context}</div>
+      <div class="playbook-questions">${c.questions.map(q=>`<div class="playbook-q">${q}</div>`).join('')}</div>
+    </div>`).join('');
+  section.style.display='block';
+}
+function togglePlaybook(id){
+  const card=document.getElementById('pcard-'+id);
+  const check=document.getElementById('pcheck-'+id);
+  const on=check.classList.toggle('checked');
+  card.classList.toggle('discussed',on);
+}
+
 // Pre-fill from localStorage if available
 const saved=JSON.parse(localStorage.getItem('founderProfile')||'{}');
 if(saved.name)document.getElementById('a_name').value=saved.name;
@@ -736,6 +897,8 @@ if(saved.communication_style)document.getElementById('a_comm').value=saved.commu
 if(saved.execution_style)document.getElementById('a_exec').value=saved.execution_style;
 if(saved.conflict_approach)document.getElementById('a_conflict').value=saved.conflict_approach;
 if(saved.github_username)document.getElementById('a_github').value=saved.github_username;
+if(saved.location)document.getElementById('a_location').value=saved.location;
+if(saved.timezone)document.getElementById('a_timezone').value=saved.timezone;
 </script>
 <script src="mascot.js"></script>
 </body>

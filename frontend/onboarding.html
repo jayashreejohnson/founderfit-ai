@@ -128,6 +128,22 @@
           <option value="transitioning">Transitioning — leaving job soon</option>
         </select>
       </div>
+      <div class="field-row">
+        <div class="field"><label>Location <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.75rem">(optional)</span></label><input type="text" id="location" placeholder="e.g. New York, NY"/></div>
+        <div class="field"><label>Timezone <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.75rem">(optional)</span></label>
+          <select id="timezone">
+            <option value="">— select —</option>
+            <option value="EST">EST (UTC−5)</option>
+            <option value="CST">CST (UTC−6)</option>
+            <option value="MST">MST (UTC−7)</option>
+            <option value="PST">PST (UTC−8)</option>
+            <option value="GMT">GMT (UTC+0)</option>
+            <option value="CET">CET (UTC+1)</option>
+            <option value="IST">IST (UTC+5:30)</option>
+            <option value="SGT">SGT (UTC+8)</option>
+          </select>
+        </div>
+      </div>
       <div class="field">
         <label>LinkedIn PDF <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.75rem"> &mdash; <a href="https://www.youtube.com/watch?v=YrplE62daWQ" target="_blank" style="color:#818cf8">how do I export my LinkedIn as a PDF?</a> &nbsp;(optional)</span></label>
         <div class="resume-drop" id="resume_drop" onclick="document.getElementById('resume_file').click()">
@@ -281,6 +297,8 @@
       github_username:document.getElementById('github').value,
       ambition_level:document.getElementById('ambition').value,
       time_commitment:document.getElementById('time_commitment').value,
+      location:document.getElementById('location').value.trim()||null,
+      timezone:document.getElementById('timezone').value||null,
       decision_speed:document.querySelector('[name=decision_speed]:checked')?.value||'moderate',
       risk_tolerance:document.querySelector('[name=risk_tolerance]:checked')?.value||'moderate',
       communication_style:document.querySelector('[name=communication_style]:checked')?.value||'balanced',

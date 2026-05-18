@@ -188,4 +188,7 @@ def _score_dimensions(profile: FounderProfile) -> dict:
         "Time & Energy": 85 if profile.time_commitment in ("full_time", "sprint") else 55 if profile.time_commitment in ("part_time", "flexible") else 65,
         "Ownership Philosophy": 80 if profile.ownership_philosophy == "flexible" else 70,
         "GTM Orientation": 78 if profile.gtm_orientation == "product_led" else 72 if profile.gtm_orientation == "sales_led" else 70,
+        # Network Proximity: scored on data richness for individual assessment;
+        # cross-profile comparison happens inside the compatibility agent pipeline
+        "Network Proximity": 75 if profile.location and profile.timezone else 65 if profile.location or profile.timezone else 55,
     }
