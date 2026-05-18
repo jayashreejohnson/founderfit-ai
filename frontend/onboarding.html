@@ -128,6 +128,13 @@
           <option value="transitioning">Transitioning â€” leaving job soon</option>
         </select>
       </div>
+      <div class="field">
+        <label>LinkedIn PDF <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.75rem"> &mdash; <a href="https://www.youtube.com/watch?v=YrplE62daWQ" target="_blank" style="color:#818cf8">how to export &#8599;</a> &nbsp;(optional)</span></label>
+        <div class="resume-drop" id="resume_drop" onclick="document.getElementById('resume_file').click()">
+          <span>&#128206;</span><span id="resume_label">Click to upload your LinkedIn PDF</span>
+        </div>
+        <input id="resume_file" type="file" accept=".pdf" style="display:none" onchange="handleResumeUpload(this)"/>
+      </div>
       <div class="actions"><button class="btn-next" onclick="goToStep(2)">Continue â†’</button></div>
     </div>
 
