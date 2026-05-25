@@ -68,6 +68,14 @@ async def analyze_compatibility(request: CompatibilityRequest):
             resume_pdf_text_a=request.resume_pdf_text_a,
             resume_pdf_text_b=request.resume_pdf_text_b,
         )
+        # If the upstream agents produced no structured compat payload (LLM
+        # unreachable or non-JSON response), surface that as a 502 so the
+        # frontend's existing local fallback engages instead of rendering
+        # an all-null "complete" response.
+        if result.get("overall_score") is None and result.get("dimensions") is None:
+            detail = result.get("summary") or "Compatibility analysis produced no structured output."
+            logger.warning("Compatibility analysis returned empty payload: %s", detail)
+            raise HTTPException(status_code=502, detail=detail)
         return CompatibilityResponse(
             status=result["status"],
             summary=result.get("summary", ""),
@@ -81,6 +89,8 @@ async def analyze_compatibility(request: CompatibilityRequest):
             strengths=result.get("strengths"),
             recommendations=result.get("recommendations"),
         )
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error("Compatibility analysis failed: %s", e)
         raise HTTPException(status_code=500, detail=str(e))

@@ -17,12 +17,12 @@ logger = logging.getLogger(__name__)
 
 def get_llm_config():
     return LLMConfig(
-        config_list=[{
+        {
             "api_type": "openai",
             "model": "openai/gpt-4o",
             "api_key": os.environ.get("OPENROUTER_API_KEY", ""),
             "base_url": "https://openrouter.ai/api/v1",
-        }],
+        },
         timeout=60,
     )
 

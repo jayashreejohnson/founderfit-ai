@@ -360,14 +360,14 @@
       <button class="btn-reset" onclick="resetAnalysis()">New Analysis</button>
     </div>
 
-    <div class=”score-hero”>
-      <div class=”score-hero-left”>
-        <div class=”score-big” id=”overall-score”>&ndash;</div>
-        <div class=”score-label”>Overall Compatibility Score</div>
-        <div class=”archetype-pill” id=”archetype-label”>Analyzing&hellip;</div>
+    <div class="score-hero">
+      <div class="score-hero-left">
+        <div class="score-big" id="overall-score">&ndash;</div>
+        <div class="score-label">Overall Compatibility Score</div>
+        <div class="archetype-pill" id="archetype-label">Analyzing&hellip;</div>
       </div>
-      <div class=”radar-wrap”>
-        <canvas id=”radar-canvas” width=”240” height=”240”></canvas>
+      <div class="radar-wrap">
+        <canvas id="radar-canvas" width="240" height="240"></canvas>
       </div>
     </div>
 
@@ -654,6 +654,14 @@ async function runAnalysis(){
 }
 
 function renderResults(r,a,b){
+  console.log("renderResults started");
+  console.log("results-section", document.getElementById("results-section"));
+  console.log("overall-score", document.getElementById("overall-score"));
+  console.log("archetype-label", document.getElementById("archetype-label"));
+  console.log("dim-breakdown", document.getElementById("dim-breakdown"));
+  console.log("strengths-list", document.getElementById("strengths-list"));
+  console.log("friction-list", document.getElementById("friction-list"));
+  console.log("recs-list", document.getElementById("recs-list"));
   // Clear any previous narrative card before inserting a fresh one
   document.querySelectorAll('#results-section .narrative-card').forEach(el=>el.remove());
   if(r.narrative){
